@@ -29,6 +29,7 @@ class Main(Scene):
         brands = averaged_scores.keys()
         scores = averaged_scores.values()
 
+
         scores = list(scores)
         brands = list(brands)
         brands[0] = 'Unknown'
@@ -41,8 +42,6 @@ class Main(Scene):
         # getting the data for the sorted graph
 
         sorted_averaged_scores = dict(sorted(averaged_scores.items(), key=operator.itemgetter(1)))
-
-        
         sorted_scores = sorted_averaged_scores.values()
 
             #sorting the brands and scores
@@ -50,6 +49,7 @@ class Main(Scene):
 
         sorted_scores = list(sorted_scores)
         sorted_scores.sort()
+        sorted_scores.reverse()
 
         sorted_brands = []
         reference_items = averaged_scores.items()
@@ -58,7 +58,7 @@ class Main(Scene):
                 pair = list(pair)
                 if score == pair[1]:
                     sorted_brands.append(pair[0])
-        sorted_brands[6] = 'Unknown'
+        sorted_brands[4] = 'Unknown'
 
 
         # making the sorted bar graph
@@ -66,7 +66,15 @@ class Main(Scene):
         sorted_score_chart = BarChart(values=sorted_scores, bar_names=sorted_brands, y_range=[0,5,1])
         sorted_score_chart_values = sorted_score_chart.get_bar_labels()
         
+        mean_score_bracket = Brace(sorted_score_chart, UP)
 
+        average_score = getPopulationMean(data)
+        
+
+
+        average_score_text = MathTex(r"\text{Average score of all phones: }" + str(average_score))
+        average_score_text.to_edge(UP)
+        
         
 
         self.play(Write(presentation_title))
@@ -78,7 +86,23 @@ class Main(Scene):
         self.wait(2)
         self.play(ReplacementTransform(average_score_chart, sorted_score_chart), ReplacementTransform(average_score_chart_values, sorted_score_chart_values))
         self.wait(2)
+        self.play(FadeIn(mean_score_bracket))
+        self.wait(2)
+        self.play(ReplacementTransform(first_analysis_title, average_score_text))
+        self.wait(2)
+
         
+def getPopulationMean(data):
+    mean = []
+    for brand in data:
+        if brand != 'brand':
+            for product in data[brand]:
+                for review in data[brand][product]:
+                    score = review[0]
+                    mean.append(int(score))
+    mean = sum(mean) / len(mean)
+    mean = round(mean, 3)
+    return mean
 
 def getAverageReviewScore(brand, data):
     temp_scores = []
@@ -89,9 +113,6 @@ def getAverageReviewScore(brand, data):
     mean = sum(temp_scores) / len(temp_scores)
     mean = round(mean, 3)
     return mean
-
-        
-
 
 def formating():
     with open(fr'{PROJECT_PATH}\20191226-items.csv', 'r', encoding='utf-8') as item_csv:
@@ -134,8 +155,4 @@ if __name__ == '__main__':
     with open(fr"{PROJECT_PATH}\formatted.json", 'r') as formatted_json:
         data = json.load(formatted_json)
 
-    averaged_scores = {}
-    for brand in data:
-        if brand != 'brand':
-            average_score = getAverageReviewScore(brand, data)
-            averaged_scores[brand] = average_score
+    population_mean = getPopulationMean(data)
