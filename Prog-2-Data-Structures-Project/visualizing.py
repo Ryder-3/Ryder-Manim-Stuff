@@ -1,7 +1,7 @@
 from manim import *
 import json
 import csv
-from collections import OrderedDict
+import operator
 
 PROJECT_PATH = ".\Prog-2-Data-Structures-Project"
 
@@ -39,15 +39,34 @@ class Main(Scene):
         
 
         # getting the data for the sorted graph
-        reversed_averaged_scores = {}
-        for i in range(0, len(scores)):
-            pass
 
-        sorted_scores = scores.copy().sort()
+        sorted_averaged_scores = dict(sorted(averaged_scores.items(), key=operator.itemgetter(1)))
+
+        
+        sorted_scores = sorted_averaged_scores.values()
+
+            #sorting the brands and scores
+
+
+        sorted_scores = list(sorted_scores)
+        sorted_scores.sort()
 
         sorted_brands = []
+        reference_items = averaged_scores.items()
         for score in sorted_scores:
-            sorted_brands.append()
+            for pair in reference_items:
+                pair = list(pair)
+                if score == pair[1]:
+                    sorted_brands.append(pair[0])
+        sorted_brands[6] = 'Unknown'
+
+
+        # making the sorted bar graph
+
+        sorted_score_chart = BarChart(values=sorted_scores, bar_names=sorted_brands, y_range=[0,5,1])
+        sorted_score_chart_values = sorted_score_chart.get_bar_labels()
+        
+
         
 
         self.play(Write(presentation_title))
@@ -55,8 +74,9 @@ class Main(Scene):
         self.play(Unwrite(presentation_title, reverse=False))
         self.play(Write(first_analysis_title))
         self.wait(1)
-        self.play(Create(average_score_chart.axes))
-        self.play(Create(average_score_chart.bars), Write(average_score_chart_values))
+        self.play(Create(average_score_chart), Write(average_score_chart_values))
+        self.wait(2)
+        self.play(ReplacementTransform(average_score_chart, sorted_score_chart), ReplacementTransform(average_score_chart_values, sorted_score_chart_values))
         self.wait(2)
         
 
