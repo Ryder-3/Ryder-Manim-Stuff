@@ -1,4 +1,5 @@
 from manim import *
+
 import json
 import csv
 import operator
@@ -84,12 +85,11 @@ class Main(Scene):
         self.wait(1)
         self.play(Create(average_score_chart), Write(average_score_chart_values))
         self.wait(2)
-        self.play(ReplacementTransform(average_score_chart, sorted_score_chart), ReplacementTransform(average_score_chart_values, sorted_score_chart_values))
+        self.play(TransformMatchingShapes(average_score_chart, sorted_score_chart), TransformMatchingTex(average_score_chart_values, sorted_score_chart_values))
         self.wait(2)
         self.play(FadeIn(mean_score_bracket))
         self.wait(2)
-        self.play(ReplacementTransform(first_analysis_title, average_score_text))
-        self.wait(2)
+
 
         
 def getPopulationMean(data):
