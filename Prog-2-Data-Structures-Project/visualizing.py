@@ -1,11 +1,13 @@
 from manim import *
-
 import json
 import csv
 import operator
 
 PROJECT_PATH = ".\Prog-2-Data-Structures-Project"
 
+config.renderer = "opengl"
+config.quality = "low"
+config.write_to_movie = False
 
 class Main(Scene):
     def construct(self):
@@ -67,7 +69,6 @@ class Main(Scene):
         sorted_score_chart = BarChart(values=sorted_scores, bar_names=sorted_brands, y_range=[0,5,1])
         sorted_score_chart_values = sorted_score_chart.get_bar_labels()
         
-        mean_score_bracket = Brace(sorted_score_chart, UP)
 
         average_score = getPopulationMean(data)
         
@@ -79,7 +80,7 @@ class Main(Scene):
         
 
         self.play(Write(presentation_title))
-        self.wait(2)
+        self.wait_until(lambda : self.mouse)
         self.play(Unwrite(presentation_title, reverse=False))
         self.play(Write(first_analysis_title))
         self.wait(1)
@@ -87,11 +88,10 @@ class Main(Scene):
         self.wait(2)
         self.play(TransformMatchingShapes(average_score_chart, sorted_score_chart), TransformMatchingTex(average_score_chart_values, sorted_score_chart_values))
         self.wait(2)
-        self.play(FadeIn(mean_score_bracket))
-        self.wait(2)
 
 
-        
+
+
 def getPopulationMean(data):
     mean = []
     for brand in data:
