@@ -6,8 +6,8 @@ import operator
 PROJECT_PATH = ".\Prog-2-Data-Structures-Project"
 
 config.renderer = "opengl"
-config.quality = "low"
 config.write_to_movie = False
+config.preview = True
 
 class Main(Scene):
     def construct(self):
@@ -23,6 +23,7 @@ class Main(Scene):
                 averaged_scores[brand] = average_score
 
         presentation_title = Text("Comparing Phone Reveiws to Date and Brand")
+
 
         first_analysis_title = Text("Average Score of Different Brands")
         first_analysis_title.to_edge(UP)
@@ -80,7 +81,6 @@ class Main(Scene):
         
 
         self.play(Write(presentation_title))
-        self.wait_until(lambda : self.mouse)
         self.play(Unwrite(presentation_title, reverse=False))
         self.play(Write(first_analysis_title))
         self.wait(1)
@@ -88,6 +88,9 @@ class Main(Scene):
         self.wait(2)
         self.play(TransformMatchingShapes(average_score_chart, sorted_score_chart), TransformMatchingTex(average_score_chart_values, sorted_score_chart_values))
         self.wait(2)
+    def on_mouse_press(self, point, button, modifiers):
+        print('Click')
+        return super().on_mouse_press(point, button, modifiers)
 
 
 
